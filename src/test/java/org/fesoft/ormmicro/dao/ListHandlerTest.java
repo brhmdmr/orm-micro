@@ -23,6 +23,7 @@ public class ListHandlerTest {
         ListHandler<User> listHandler = new ListHandler<>();
         List<User> dbUserList = listHandler.readList(rs, User.class);
         assertEquals(userList, dbUserList);
+
     }
 
     private List<User> createExpectedUserList() {
