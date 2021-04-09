@@ -58,7 +58,7 @@ public class GenericDAO<T, K> {
     }
 
     /**
-     * Private methods will be extract to helper class
+     * Private methods will be extracted to helper class
      */
 
     private String findAllQuery() {
