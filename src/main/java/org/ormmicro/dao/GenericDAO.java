@@ -1,9 +1,9 @@
-package org.fesoft.dao;
+package org.ormmicro.dao;
 
 import lombok.SneakyThrows;
-import org.fesoft.annotation.Id;
-import org.fesoft.handler.ListHandler;
-import org.fesoft.handler.RowHandler;
+import org.ormmicro.annotation.Id;
+import org.ormmicro.handler.ListHandler;
+import org.ormmicro.handler.RowHandler;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;

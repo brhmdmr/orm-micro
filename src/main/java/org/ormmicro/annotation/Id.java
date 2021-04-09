@@ -1,4 +1,4 @@
-package org.fesoft.annotation;
+package org.ormmicro.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

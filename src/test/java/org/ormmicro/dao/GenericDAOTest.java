@@ -1,7 +1,6 @@
 package org.ormmicro.dao;
 
 import lombok.SneakyThrows;
-import org.fesoft.dao.GenericDAO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ormmicro.entity.Role;

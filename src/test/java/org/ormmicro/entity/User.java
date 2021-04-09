@@ -1,7 +1,7 @@
 package org.ormmicro.entity;
 
 import lombok.*;
-import org.fesoft.annotation.Id;
+import org.ormmicro.annotation.Id;
 
 import java.util.Objects;
 
