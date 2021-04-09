@@ -1,6 +1,7 @@
-package org.fesoft.ormmicro.dao;
+package org.ormmicro.entity;
 
 import lombok.*;
+import org.fesoft.annotation.Id;
 
 import java.util.Objects;
 
@@ -11,9 +12,20 @@ import java.util.Objects;
 @AllArgsConstructor
 public class User {
 
+    @Id
     private int id;
     private String username;
     private String password;
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,8 @@
-package org.fesoft.ormmicro.dao;
+package org.ormmicro.handler;
 
+import org.fesoft.handler.ListHandler;
 import org.junit.jupiter.api.Test;
+import org.ormmicro.entity.User;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -46,9 +48,9 @@ public class ListHandlerTest {
     private ResultSetMetaData mockResultSetMetaData() throws SQLException {
         ResultSetMetaData rsmd = mock(ResultSetMetaData.class);
         when(rsmd.getColumnCount()).thenReturn(3);
-        when(rsmd.getColumnName(0)).thenReturn("id");
-        when(rsmd.getColumnName(1)).thenReturn("username");
-        when(rsmd.getColumnName(2)).thenReturn("password");
+        when(rsmd.getColumnName(1)).thenReturn("id");
+        when(rsmd.getColumnName(2)).thenReturn("username");
+        when(rsmd.getColumnName(3)).thenReturn("password");
         return rsmd;
     }
 }
