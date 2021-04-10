@@ -1,6 +1,7 @@
 package org.ormmicro.entity;
 
 import lombok.*;
+import org.ormmicro.annotation.Column;
 import org.ormmicro.annotation.Id;
 
 import java.util.Objects;
@@ -14,7 +15,9 @@ public class User {
 
     @Id
     private int id;
+    @Column
     private String username;
+    @Column(name = "pwd")
     private String password;
 
 

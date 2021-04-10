@@ -13,9 +13,9 @@ public class GenericDAOTestDataUtil {
     }
 
     private static void prepareUser(Connection connection) throws SQLException {
-        String createQuery = "CREATE TABLE User (ID INTEGER identity primary key, USERNAME VARCHAR(100),  PASSWORD VARCHAR(100))";
+        String createQuery = "CREATE TABLE User (ID INTEGER identity primary key, USERNAME VARCHAR(100),  pwd VARCHAR(100))";
         executeUpdate(connection, createQuery);
-        String insertQuery = "INSERT INTO User (USERNAME,PASSWORD) VALUES (?, ?)";
+        String insertQuery = "INSERT INTO User (USERNAME,PWD) VALUES (?, ?)";
         for (int i = 1; i <= 3; i++) {
             executeUpdate(connection, insertQuery, ("user" + i), ("pass" + i));
         }
