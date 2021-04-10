@@ -10,8 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GenericDAOTest {
 
@@ -31,7 +30,7 @@ public class GenericDAOTest {
     public void getAllUserData() {
         GenericDAO dao = new GenericDAO<User, Integer>(connection, User.class);
         List userList = dao.findAll();
-        assertEquals(3, userList.size());
+        assertTrue(userList.size() >= 3);
     }
 
 
@@ -51,12 +50,26 @@ public class GenericDAOTest {
     }
 
     @Test
-    void update() {
+    public void update() {
         GenericDAO<User, Integer> dao = new GenericDAO<>(connection, User.class);
         User user = User.builder().id(1).username("user21").password("pass21").build();
         dao.update(user);
         User dbUser = dao.findById(1);
         assertEquals("user21", dbUser.getUsername());
     }
+
+    @Test
+    public void insertAndDelete() {
+        GenericDAO<User, Integer> dao = new GenericDAO<>(connection, User.class);
+        User user = User.builder().username("userToInsertAndDelete").password("userToInsertAndDelete").build();
+        dao.insert(user);
+        User dbUser = dao.findAll().stream().filter(u -> u.getUsername().equalsIgnoreCase(user.getUsername())).findAny().orElse(null);
+        assertNotNull(dbUser);
+        dao.delete(dbUser.getId());
+        User dbUserDeleted = dao.findById(dbUser.getId());
+        assertNull(dbUserDeleted);
+    }
+
+
 
 }

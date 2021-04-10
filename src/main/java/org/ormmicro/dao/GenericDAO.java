@@ -10,10 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GenericDAO<T, K> {
@@ -39,7 +36,7 @@ public class GenericDAO<T, K> {
     public T findById(K id) {
         String query = findByIdQuery();
         System.out.println(query);
-        PreparedStatement preparedStatement = createPreparedStatement(query, 1);
+        PreparedStatement preparedStatement = createPreparedStatement(query, id);
         ResultSet rs = preparedStatement.executeQuery();
         if (rs.next()) {
             RowHandler<T> rowHandler = new RowHandler<>();
@@ -54,6 +51,24 @@ public class GenericDAO<T, K> {
         System.out.println(query);
         Object[] values = updateValues(entity);
         PreparedStatement preparedStatement = createPreparedStatement(query, values);
+        preparedStatement.executeUpdate();
+    }
+
+    @SneakyThrows
+    public void insert(T entity) {
+        String query = insertQuery();
+        System.out.println(query);
+        Object[] values = insertValues(entity);
+        PreparedStatement preparedStatement = createPreparedStatement(query, values);
+        preparedStatement.executeUpdate();
+
+    }
+
+    @SneakyThrows
+    public void delete(K id) {
+        String query = deleteQuery();
+        System.out.println(query);
+        PreparedStatement preparedStatement = createPreparedStatement(query, id);
         preparedStatement.executeUpdate();
     }
 
@@ -103,12 +118,59 @@ public class GenericDAO<T, K> {
         return values.toArray();
     }
 
+    private String insertQuery() {
+        String[] fieldNames = getFieldNames();
+
+        if (isIdAutoIncrement())
+            fieldNames = Arrays.stream(fieldNames)
+                    .filter(fn -> !fn.equalsIgnoreCase(getIdFieldName()))
+                    .toArray(String[]::new);
+        String[] qmList = new String[fieldNames.length];
+        for (int i = 0; i < fieldNames.length; i++)
+            qmList[i] = "?";
+
+
+        return String.format("INSERT INTO %s (%s) VALUES(%s)"
+                , entityClass.getSimpleName()
+                , String.join(", ", fieldNames)
+                , String.join(" ,", qmList));
+    }
+
+    @SneakyThrows
+    private Object[] insertValues(T entity) {
+        List<Object> values = new ArrayList<>();
+        List<String> fieldNames = Arrays.asList(getFieldNames());
+        String idFieldName = getIdFieldName();
+        if (isIdAutoIncrement())
+            fieldNames = fieldNames.stream().filter(f -> !f.equalsIgnoreCase(idFieldName)).collect(Collectors.toList());
+        for (String fieldName : fieldNames) {
+            Field field = entityClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            values.add(field.get(entity));
+        }
+        return values.toArray();
+    }
+
+    private String deleteQuery() {
+        String idField = getIdFieldName();
+        return String.format("DELETE FROM %s WHERE %s = ?", entityClass.getSimpleName(), idField);
+    }
 
     private String getIdFieldName() {
-        return Arrays.stream(entityClass.getDeclaredFields())
+        return Objects.requireNonNull(Arrays.stream(entityClass.getDeclaredFields())
                 .filter(field -> field.getAnnotation(Id.class) != null)
-                .findFirst().get().getName();
+                .findAny().orElse(null)).getName();
     }
+
+
+    @SneakyThrows
+    private boolean isIdAutoIncrement() {
+        return entityClass
+                .getDeclaredField(getIdFieldName())
+                .getAnnotation(Id.class)
+                .autoIncrement();
+    }
+
 
     private String[] getFieldNames() {
         return propertiesToFieldMappings().keySet().toArray(new String[0]);
@@ -130,5 +192,6 @@ public class GenericDAO<T, K> {
         }
         return preparedStatement;
     }
+
 
 }
